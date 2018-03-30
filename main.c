@@ -1,9 +1,8 @@
 /*
 
 Data Structure Project using Linkedlist.
-Money manager app
-Ask user for the amount of money he/she is saving each month.
-User have a choice for add,delete, find, print.
+Empoyee manager app
+
 */
 
 #include <stdio.h>
@@ -29,67 +28,105 @@ void initList(List *);
 void print_Struct_Element(List *);
 void insertAtHead(List *, char [],int);
 
-void insertAtHead(List *listPtr, char name[], int age){
-  Node *newNodePtr = (Node*)malloc(sizeof(Node));
-  if (newNodePtr == NULL){
-    printf("Unable to allocate new node\n");
-    return;
-  }
-  strcpy(newNodePtr->name, name);
-  newNodePtr->age = age;
-  newNodePtr->next = NULL;
 
+void insertAtHead(List * listPointer, char name[],int age){
 
-  if (listPtr->numberOfNode == 0){
-    // this is the case when the list is empty
-    listPtr->head = newNodePtr;
-    listPtr->tail = newNodePtr;
-  }
-  else{
-    // this is the case when the list is not empty
-    newNodePtr->next = listPtr->head;
-    listPtr->head = newNodePtr;
-  }
-  listPtr->numberOfNode++;
+// creat a new node to insert to the linkedList
+  Node *newNode = (Node *)malloc(sizeof(Node));
+
+// check if new node created or not
+
+if (newNode == NULL){
+  printf("There is a error, CAN'T create new node\n");
+  return;
+} else {
+  printf("Node created successfully\n");
+  strcpy(newNode->name, name); // in C can't assign string value to array directly
+                               // have to use strcpy
+  newNode->age = age;
+  newNode->next = NULL;   // pointer to the second node
+}
+
+// start insert new node to linkedList
+
+if (listPointer->numberOfNode == 0){
+
+  printf("List is Empty, head and tail poiter point to same data\n");
+  listPointer->head = newNode;
+  listPointer->tail = newNode;
+
+} else {
+
+  printf("List is Not Empty\n");
+  newNode->next = listPointer->head;
+  listPointer->head = newNode;
+}
+
+// increase the number of node in the list
+listPointer->numberOfNode++;
 }
 
 void initList(List * listPointer) {
+
   listPointer->head = NULL;
   listPointer->tail = NULL;
   listPointer->numberOfNode = 0;
+
 }
 
 void print_Struct_Element(List *list) {
+
    printf("String name: %s\n",list->head->name);
    printf("Age data: %d\n",list->head->age);
 
    printf("head address %p\n",list->head );
    printf("tail address %p\n",list->tail );
-   printf("head value %p\n",&list->head );
-   printf("tail value %p\n",&list->tail );
+
+   printf("head value %p\n",&(list->head) );
+   printf("tail value %p\n",&(list->tail) );
+   printf("number of nodes %d\n",list->numberOfNode);
+
 }
 
 
 int main() {
 
   char name[10];
-  int age, count;
-  // printf("Please enter your name and age  \n ");
-  //  sscanf("harrison 30", "%s %d",name, &age );
-  printf("Please enter your age ");
-    //fgets(age, 5, stdin);
-
-   scanf("%d\n",&age);
-
-  printf(" Please enter your name\n");
-   fgets(name,10, stdin);
-    //scanf("%s\n",name);
-
+  int age,quit = 0, userChoice;
   List moneyManagerList;
-  insertAtHead(&moneyManagerList,name,age );
-  //moneyManagerList.head->name = strcpy(moneyManagerList.head->name, name );
-  //printf("head string name %s\n",moneyManagerList.head->name );
-  print_Struct_Element(&moneyManagerList);
+
+
+  while(quit != 1){
+
+    printf("Please enter your choice\n");
+    scanf("%d",&userChoice);
+
+    switch (userChoice) {
+
+      case 1:
+      printf("Insert at head\n");
+      printf("Please enter your age\n");
+      scanf("%d",&age);
+      printf(" Please enter your name\n");
+      scanf("%s",name);
+
+      insertAtHead(&moneyManagerList,name,age );
+      break;
+      default:
+      printf("Please enter a valid choice\n");
+
+    }
+
+    print_Struct_Element(&moneyManagerList);
+
+    printf("Enter 1 if you want to quit, otherwise enter \"0\" \n");
+    scanf("%d",&quit);
+  }
+
+
+
+
+
 
   return 0;
 }
