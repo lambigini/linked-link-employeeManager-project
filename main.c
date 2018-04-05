@@ -29,12 +29,17 @@ void initList(List *);
 void insertAtHead(List *, char [],int);
 void insertAtTail(List *, char [],int);
 void printListDetail(List *);
+void deleteAtHead(List *);
+void deleteAtTail(List *);
 
 void menu() {
   printf("Welcome to Employee Manager App Using Linkedlist\n");
   printf("Please chose options as follow\n");
   printf("Enter 1: Insert At Head\n");
   printf("Enter 2: Insert At Tail\n");
+  printf("Enter 3: Delete At Head\n");
+  printf("Enter 4: Delete At Tail\n");
+
 }
 
 void initList(List * listPointer) {
@@ -127,6 +132,69 @@ void printListDetail(List * listPointer){
   }
 }
 
+void deleteAtHead(List * listPointer) {
+
+	// check if the list is empty or not
+
+	if (listPointer->numberOfNode == 0) {
+
+		printf("List is empty, please input data first");
+	}
+	else if (listPointer->numberOfNode == 1) {
+    // the list has only 1 node
+
+		listPointer->head = listPointer->tail = NULL;
+
+	}
+	else {
+    printf("Data to be deleted\n");
+    printf("Name: %s\n", listPointer->head->name);
+    printf("Age: %d\n", listPointer->head->age);
+		listPointer->head = listPointer->head->next;
+    printf("Success fully deleted data \n");
+	}
+
+  listPointer->numberOfNode--;
+
+}
+void deleteAtTail(List * listPointer) {
+
+	// check if the list is empty or not
+
+	if (listPointer->numberOfNode == 0) {
+
+		printf("List is empty, please input data first");
+	}
+	else if (listPointer->numberOfNode == 1) {
+    // the list has only 1 node
+
+		listPointer->head = listPointer->tail = NULL;
+
+	}
+	else {
+    // creat a new pointer type node to track the previous node of tail node
+    Node *current = listPointer->head ;
+
+    printf("Tail's data  to be deleted\n");
+    printf("Name: %s\n", listPointer->tail->name);
+    printf("Age: %d\n", listPointer->tail->age);
+
+    // loop until find the previous of tail node
+    while(current->next != listPointer->tail){
+      //jump to the next node, until found the node previous to the tail then exit
+      current = current->next;
+    }
+    // found the previous node,set the tail to previous node, and the tail pointer to null
+    listPointer->tail = current;
+    listPointer->tail->next = NULL;
+    free(current);
+	}
+
+  listPointer->numberOfNode--;
+
+}
+
+
 int main() {
 
   char name[10];
@@ -161,6 +229,14 @@ int main() {
       scanf("%s",name);
 
       insertAtTail(&moneyManagerList,name,age );
+      break;
+      case 3:
+      printf("Delete at Head operation\n");
+      deleteAtHead(&moneyManagerList);
+      break;
+      case 4:
+      printf("Delete at Tail operation\n");
+      deleteAtTail(&moneyManagerList);
       break;
 
       default:
