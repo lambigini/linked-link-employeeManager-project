@@ -218,10 +218,19 @@ void inputDataFromFile(List *listPointer, char *fileName){
   }
 
 
-   fscanf(ifp,"%s %d",username, &age);
+
   while (!feof(ifp)){
+
+    if((fscanf(ifp,"%s %d",username, &age))!=2)
+    /*
+    Since our format is "%s %d", we expect it to read in 2 values
+    Now, if we get 2 values, the loop continues. If we don't get 2 values,
+    either because we are at the end of the file or some other problem occurred
+    (e.g., it sees a letter when it is trying to read in a number with %d), then the loop will end.
+      */
+    break;
     insertAtTail(listPointer,username, age);
-    fscanf(ifp,"%s %d",username, &age);
+
   }
 
     fclose(ifp);
@@ -247,7 +256,6 @@ void outputToFile(List *listPointer){
   } else {
 
     while(current != NULL){
-      printf("%p\n",&(current->age) );
       fprintf(ofp,"%s %d\n",current->name,current->age);
       current = current->next; // move to the next pointer
     }
