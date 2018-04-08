@@ -9,7 +9,6 @@ Empoyee manager app
 #include <stdlib.h>
 #include <string.h>
 
-
 typedef struct Node{
   char name[10] ;
   int age;
@@ -31,24 +30,33 @@ void insertAtTail(List *, char [],int);
 void printListDetail(List *);
 void deleteAtHead(List *);
 void deleteAtTail(List *);
+void inputDataFromFile(List *, char *);
+void outputToFile(List *);
 
 void menu() {
+
   printf("Welcome to Employee Manager App Using Linkedlist\n");
   printf("Please chose options as follow\n");
   printf("Enter 1: Insert At Head\n");
   printf("Enter 2: Insert At Tail\n");
   printf("Enter 3: Delete At Head\n");
   printf("Enter 4: Delete At Tail\n");
+  printf("Enter 5: Open input file and write data to the Linked list\n");
+  printf("Enter 6: Output to File \n");
+  printf("Enter 7: Print list detail \n");
+  printf("Enter 0: Exit \n");
 
 }
 
 void initList(List * listPointer) {
+
   listPointer->head = NULL;
   listPointer->tail = NULL;
   listPointer->numberOfNode = 0;
 }
 
 void insertAtHead(List * listPointer, char name[],int age){
+
 // creat a new node to insert to the linkedList
   Node *newNode = (Node *)malloc(sizeof(Node));
 // check if new node created or not
@@ -115,6 +123,7 @@ void insertAtTail(List *listPointer, char name[],int age){
 }
 
 void printListDetail(List * listPointer){
+
   Node * current = listPointer->head;
   if (listPointer->numberOfNode == 0){
 
@@ -194,12 +203,66 @@ void deleteAtTail(List * listPointer) {
 
 }
 
+void inputDataFromFile(List *listPointer, char *fileName){
+
+  FILE *ifp;
+  char *mode = "r";
+  char username[12]; // 11 chatacters + 1 "/0" character
+  int age;
+
+  ifp = fopen(fileName, mode);
+
+  if ( ifp == NULL) {
+    fprintf(stderr, "Can't open input file %s\n",fileName );
+    exit(1);
+  }
+
+
+   fscanf(ifp,"%s %d",username, &age);
+  while (!feof(ifp)){
+    insertAtTail(listPointer,username, age);
+    fscanf(ifp,"%s %d",username, &age);
+  }
+
+    fclose(ifp);
+}
+
+void outputToFile(List *listPointer){
+
+  FILE  *ofp;
+
+  char outputFilename[] = "outList2.txt";
+
+  ofp = fopen(outputFilename, "w");
+
+  if (ofp == NULL){
+    fprintf(stderr, "Can't write data to output file \n" );
+    exit(1);
+  }
+
+  Node * current = listPointer->head;
+  if (listPointer->numberOfNode == 0){
+
+    printf("LIST IS EMPTY\n");
+  } else {
+
+    while(current != NULL){
+      printf("%p\n",&(current->age) );
+      fprintf(ofp,"%s %d\n",current->name,current->age);
+      current = current->next; // move to the next pointer
+    }
+
+  }
+    free(current);
+    fclose(ofp);
+}
+
 
 int main() {
 
   char name[10];
   int age,quit = 0, userChoice;
-  List moneyManagerList;
+  List employeeList;
 
 
   while(quit != 1){
@@ -209,17 +272,14 @@ int main() {
 
     switch (userChoice) {
 
-
       case 1:
       printf("Insert at head\n");
       printf("Please enter your age\n");
       scanf("%d",&age);
       printf(" Please enter your name\n");
       scanf("%s",name);
-
-      insertAtHead(&moneyManagerList,name,age );
+      insertAtHead(&employeeList,name,age );
       break;
-
 
       case 2:
       printf("Insert at tail\n");
@@ -228,26 +288,40 @@ int main() {
       printf(" Please enter your name\n");
       scanf("%s",name);
 
-      insertAtTail(&moneyManagerList,name,age );
+      insertAtTail(&employeeList,name,age );
       break;
+
       case 3:
       printf("Delete at Head operation\n");
-      deleteAtHead(&moneyManagerList);
+      deleteAtHead(&employeeList);
       break;
+
       case 4:
       printf("Delete at Tail operation\n");
-      deleteAtTail(&moneyManagerList);
+      deleteAtTail(&employeeList);
+      break;
+
+      case 5:
+      inputDataFromFile(&employeeList,"employee.txt");
+      break;
+      case 6:
+      outputToFile(&employeeList);
+      break;
+
+      case 7:
+      printListDetail(&employeeList);
+      break;
+
+      case 0:
+      quit = 1;
       break;
 
       default:
       printf("Please enter a valid choice\n");
 
     }
-    printListDetail(&moneyManagerList);
+    printListDetail(&employeeList);
 
-
-    printf("Enter 0 to Continue, to Quit enter \"1\" \n");
-    scanf("%d",&quit);
   }
 
 
