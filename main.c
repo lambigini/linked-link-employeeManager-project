@@ -32,6 +32,7 @@ void deleteAtHead(List *);
 void deleteAtTail(List *);
 void inputDataFromFile(List *, char *);
 void outputToFile(List *);
+Node *find(List *, char [], int, Node **);
 
 void menu() {
 
@@ -44,12 +45,14 @@ void menu() {
   printf("Enter 5: Open input file and write data to the Linked list\n");
   printf("Enter 6: Output to File \n");
   printf("Enter 7: Print list detail \n");
+  printf("Enter 8: Find specific node in the linked list\n");
+  printf("Enter 9: Delete specific node\n");
+
   printf("Enter 0: Exit \n");
 
 }
 
 void initList(List * listPointer) {
-
   listPointer->head = NULL;
   listPointer->tail = NULL;
   listPointer->numberOfNode = 0;
@@ -264,14 +267,53 @@ void outputToFile(List *listPointer){
     free(current);
     fclose(ofp);
 }
+Node *find(List *listPointer, char findName[], int findAge, Node **previousPtr){
+
+Node *current = listPointer->head;
+*previousPtr = NULL;
+
+while (current != NULL){
+
+  if ((strcmp(current->name, findName) == 0) && (current->age == findAge)) {
+    break;
+  }
+
+  *previousPtr = current;
+  current = current->next;
+}
+  return current;
+}
+
+void deleteTarget(List *listPointer,char findName[], int findAge){
+  Node *current = NULL, *prev = NULL;
+  current = find(listPointer, findName, findAge, &prev);
+
+  if (current == NULL){
+    printf("list empty\n");
+  }
+
+  if (current == listPointer->head){
+    printf("Target node deleted: name %s age %d \n", current->name, current->age);
+  } else if ( current == listPointer->tail){
+    deleteAtTail(listPointer);
+    printf("Target node deleted: name %s age %d \n", current->name, current->age);
+  } else {
+    prev->next = current->next;
+    free(current);
+    listPointer->numberOfNode--;
+    printf("Target node deleted: name %s age %d \n", current->name, current->age);
+  }
+
+}
+
 
 
 int main() {
 
   char name[10];
-  int age,quit = 0, userChoice;
+  int age, quit = 0, userChoice;
   List employeeList;
-
+  Node *currentNode = NULL, *previousNode = NULL;
 
   while(quit != 1){
     menu();
@@ -319,6 +361,29 @@ int main() {
       case 7:
       printListDetail(&employeeList);
       break;
+
+      case 8:
+      printf("please enter name you want to find\n");
+      scanf("%s",name);
+      printf("please enter age you want to find\n");
+      scanf("%d",&age);
+      currentNode = find(&employeeList,name,age,&previousNode);
+
+      if (currentNode == NULL){
+        printf("Not found those data\n");
+      } else {
+        printf("Found data, address of the target node %p previous node %p \n", currentNode, previousNode);
+      }
+      break;
+
+      case 9:
+      printf("please enter name you want to delete\n");
+      scanf("%s",name);
+      printf("please enter age you want to delete\n");
+      scanf("%d",&age);
+      deleteTarget(&employeeList,name,age);
+      break;
+
 
       case 0:
       quit = 1;
