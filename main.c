@@ -33,6 +33,8 @@ void deleteAtTail(List *);
 void inputDataFromFile(List *, char *);
 void outputToFile(List *);
 Node *find(List *, char [], int, Node **);
+void insertTarget(List *,char [], int , char [], int);
+void deleteTarget(List *,char [], int);
 
 void menu() {
 
@@ -46,7 +48,9 @@ void menu() {
   printf("Enter 6: Output to File \n");
   printf("Enter 7: Print list detail \n");
   printf("Enter 8: Find specific node in the linked list\n");
-  printf("Enter 9: Delete specific node\n");
+  printf("Enter 9: Insert specific node\n");
+  printf("Enter 10: Delete specific node\n");
+
 
   printf("Enter 0: Exit \n");
 
@@ -283,6 +287,44 @@ while (current != NULL){
 }
   return current;
 }
+void insertTarget(List *listPointer,char findName[], int findAge, char insertName[], int insertAge){
+  // creat a new node to insert to the linkedList
+    Node *newNode = (Node *)malloc(sizeof(Node));
+  // check if new node created or not
+  if (newNode == NULL){
+    printf("There is a error, CAN'T create new node\n");
+    return;
+  } else {
+    printf("Node created successfully\n");
+    strcpy(newNode->name, insertName); // in C can't assign string value to array directly
+                                 // have to use strcpy
+    newNode->age = insertAge;
+    newNode->next = NULL;   // pointer to the second node
+  }
+
+  Node *current = NULL, *prev = NULL;
+  current = find(listPointer, findName, findAge, &prev);
+
+  if (current == NULL){
+    printf("list empty\n");
+  }
+
+  if (current == listPointer->head){
+    insertAtHead(listPointer,insertName,insertAge);
+    printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+  } else if ( current == listPointer->tail){
+    insertAtTail(listPointer,insertName,insertAge);
+    printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+  } else {
+    prev->next = newNode;
+    newNode->next = current;
+    free(current);
+    listPointer->numberOfNode++;
+    printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+  }
+
+}
+
 
 void deleteTarget(List *listPointer,char findName[], int findAge){
   Node *current = NULL, *prev = NULL;
@@ -293,6 +335,7 @@ void deleteTarget(List *listPointer,char findName[], int findAge){
   }
 
   if (current == listPointer->head){
+    deleteAtHead(listPointer);
     printf("Target node deleted: name %s age %d \n", current->name, current->age);
   } else if ( current == listPointer->tail){
     deleteAtTail(listPointer);
@@ -311,7 +354,8 @@ void deleteTarget(List *listPointer,char findName[], int findAge){
 int main() {
 
   char name[10];
-  int age, quit = 0, userChoice;
+  char insertName[10];
+  int age,insertAge, quit = 0, userChoice;
   List employeeList;
   Node *currentNode = NULL, *previousNode = NULL;
 
@@ -367,6 +411,7 @@ int main() {
       scanf("%s",name);
       printf("please enter age you want to find\n");
       scanf("%d",&age);
+
       currentNode = find(&employeeList,name,age,&previousNode);
 
       if (currentNode == NULL){
@@ -377,13 +422,26 @@ int main() {
       break;
 
       case 9:
+      printf("please enter name you want to find\n");
+      scanf("%s",name);
+      printf("please enter age you want to find\n");
+      scanf("%d",&age);
+
+      printf("please enter name you want to insert\n");
+      scanf("%s",insertName);
+      printf("please enter age you want to insert\n");
+      scanf("%d",&insertAge);
+
+      insertTarget(&employeeList,name,age, insertName, insertAge);
+      break;
+
+      case 10:
       printf("please enter name you want to delete\n");
       scanf("%s",name);
       printf("please enter age you want to delete\n");
       scanf("%d",&age);
       deleteTarget(&employeeList,name,age);
       break;
-
 
       case 0:
       quit = 1;
@@ -396,11 +454,6 @@ int main() {
     printListDetail(&employeeList);
 
   }
-
-
-
-
-
 
   return 0;
 }
