@@ -318,7 +318,7 @@ void insertTarget(List *listPointer,char findName[], int findAge, char insertNam
   } else {
     prev->next = newNode;
     newNode->next = current;
-    free(current);
+
     listPointer->numberOfNode++;
     printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
   }
@@ -342,7 +342,6 @@ void deleteTarget(List *listPointer,char findName[], int findAge){
     printf("Target node deleted: name %s age %d \n", current->name, current->age);
   } else {
     prev->next = current->next;
-    free(current);
     listPointer->numberOfNode--;
     printf("Target node deleted: name %s age %d \n", current->name, current->age);
   }
@@ -368,20 +367,19 @@ int main() {
 
       case 1:
       printf("Insert at head\n");
-      printf("Please enter your age\n");
-      scanf("%d",&age);
       printf(" Please enter your name\n");
       scanf("%s",name);
+      printf("Please enter your age\n");
+      scanf("%d",&age);
       insertAtHead(&employeeList,name,age );
       break;
 
       case 2:
       printf("Insert at tail\n");
-      printf("Please enter your age\n");
-      scanf("%d",&age);
       printf(" Please enter your name\n");
       scanf("%s",name);
-
+      printf("Please enter your age\n");
+      scanf("%d",&age);
       insertAtTail(&employeeList,name,age );
       break;
 
