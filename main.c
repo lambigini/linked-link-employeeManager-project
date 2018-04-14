@@ -8,6 +8,7 @@ Empoyee manager app
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct Node{
   char name[10] ;
@@ -25,13 +26,22 @@ typedef struct{
 
 void menu();
 void initList(List *);
+Node *createNewNode(char [],int);
+int isListEmpty(List *);
+
 void insertAtHead(List *, char [],int);
+void insertNodeAtHead(List *, Node *);
+
 void insertAtTail(List *, char [],int);
+void insertNodeAtTail(List *, Node *);
+
 void printListDetail(List *);
 void deleteAtHead(List *);
 void deleteAtTail(List *);
+
 void inputDataFromFile(List *, char *);
 void outputToFile(List *);
+
 Node *find(List *, char [], int, Node **);
 void insertTarget(List *,char [], int , char [], int);
 void deleteTarget(List *,char [], int);
@@ -62,46 +72,16 @@ void initList(List * listPointer) {
   listPointer->numberOfNode = 0;
 }
 
-void insertAtHead(List * listPointer, char name[],int age){
+Node *createNewNode(char name[],int age){
+  /*
+  creat a new node with the assign data: name and age to insert to the linkedList
+  */
 
-// creat a new node to insert to the linkedList
-  Node *newNode = (Node *)malloc(sizeof(Node));
-// check if new node created or not
-if (newNode == NULL){
-  printf("There is a error, CAN'T create new node\n");
-  return;
-} else {
-  printf("Node created successfully\n");
-  strcpy(newNode->name, name); // in C can't assign string value to array directly
-                               // have to use strcpy
-  newNode->age = age;
-  newNode->next = NULL;   // pointer to the second node
-}
-
-// start insert new node to linkedList
-if (listPointer->numberOfNode == 0){
-  printf("List is Empty, head and tail poiter point to same data\n");
-  listPointer->head = newNode;
-  listPointer->tail = newNode;
-} else {
-  printf("List is Not Empty\n");
-  newNode->next = listPointer->head;
-  listPointer->head = newNode;
-}
-// increase the number of node in the list
-listPointer->numberOfNode++;
-}
-
-void insertAtTail(List *listPointer, char name[],int age){
-
-  // creat a new node to insert to the linkedList
     Node *newNode = (Node *)malloc(sizeof(Node));
-
   // check if new node created or not
-
   if (newNode == NULL){
     printf("There is a error, CAN'T create new node\n");
-    return;
+    return newNode;
   } else {
     printf("Node created successfully\n");
     strcpy(newNode->name, name); // in C can't assign string value to array directly
@@ -109,40 +89,74 @@ void insertAtTail(List *listPointer, char name[],int age){
     newNode->age = age;
     newNode->next = NULL;   // pointer to the second node
   }
+  return newNode;
+}
 
-  // start insert new node to linkedList
+int isListEmpty(List *listPointer){
   if (listPointer->numberOfNode == 0){
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
+void insertAtHead(List * listPointer, char name[],int age){
+
+   Node *newNode = createNewNode(name,age);
+   insertNodeAtHead(listPointer,newNode);
+  // increase the number of node in the list
+  listPointer->numberOfNode++;
+}
+
+void insertNodeAtHead(List *listPointer, Node *newNode){
+  /*
+  start insert new node to linkedList
+  */
+  if (isListEmpty(listPointer) == 1){
     printf("List is Empty, head and tail poiter point to same data\n");
     listPointer->head = newNode;
     listPointer->tail = newNode;
-
   } else {
-
     printf("List is Not Empty\n");
+    newNode->next = listPointer->head;
+    listPointer->head = newNode;
+  }
+}
 
+void insertAtTail(List *listPointer, char name[],int age){
+
+  Node *newNode = createNewNode(name,age);
+  insertNodeAtTail(listPointer,newNode);
+  // increase the number of node in the list
+  listPointer->numberOfNode++;
+}
+
+void insertNodeAtTail(List *listPointer, Node *newNode){
+  // start check to delete Node
+  if (isListEmpty(listPointer) == 1){
+    printf("List is Empty, head and tail poiter point to same data\n");
+    listPointer->head = newNode;
+    listPointer->tail = newNode;
+  } else {
+    printf("List is Not Empty\n");
     listPointer->tail->next = newNode;
     listPointer->tail = newNode;
   }
-
-  // increase the number of node in the list
-  listPointer->numberOfNode++;
 }
 
 void printListDetail(List * listPointer){
 
   Node * current = listPointer->head;
-  if (listPointer->numberOfNode == 0){
 
+  if (isListEmpty(listPointer) == 1){
     printf("LIST IS EMPTY\n");
   } else {
     printf("HEAD ADDRESS %p\n",listPointer->head);
     while(current != NULL){
-
       printf("[%s - %d | %p] ",current->name,current->age, current);
-
       current = current->next; // move to the next pointer
     }
+
     printf("\nTAIL ADDRESS %p\n",listPointer->tail);
     printf("\n");
   }
@@ -151,8 +165,7 @@ void printListDetail(List * listPointer){
 void deleteAtHead(List * listPointer) {
 
 	// check if the list is empty or not
-
-	if (listPointer->numberOfNode == 0) {
+	if (isListEmpty(listPointer) == 1) {
 
 		printf("List is empty, please input data first");
 	}
@@ -176,16 +189,12 @@ void deleteAtHead(List * listPointer) {
 void deleteAtTail(List * listPointer) {
 
 	// check if the list is empty or not
-
-	if (listPointer->numberOfNode == 0) {
-
+	if (isListEmpty(listPointer) == 1) {
 		printf("List is empty, please input data first");
 	}
 	else if (listPointer->numberOfNode == 1) {
     // the list has only 1 node
-
 		listPointer->head = listPointer->tail = NULL;
-
 	}
 	else {
     // creat a new pointer type node to track the previous node of tail node
@@ -224,8 +233,6 @@ void inputDataFromFile(List *listPointer, char *fileName){
     exit(1);
   }
 
-
-
   while (!feof(ifp)){
 
     if((fscanf(ifp,"%s %d",username, &age))!=2)
@@ -237,7 +244,6 @@ void inputDataFromFile(List *listPointer, char *fileName){
       */
     break;
     insertAtTail(listPointer,username, age);
-
   }
 
     fclose(ifp);
@@ -287,20 +293,10 @@ while (current != NULL){
 }
   return current;
 }
+
 void insertTarget(List *listPointer,char findName[], int findAge, char insertName[], int insertAge){
-  // creat a new node to insert to the linkedList
-    Node *newNode = (Node *)malloc(sizeof(Node));
-  // check if new node created or not
-  if (newNode == NULL){
-    printf("There is a error, CAN'T create new node\n");
-    return;
-  } else {
-    printf("Node created successfully\n");
-    strcpy(newNode->name, insertName); // in C can't assign string value to array directly
-                                 // have to use strcpy
-    newNode->age = insertAge;
-    newNode->next = NULL;   // pointer to the second node
-  }
+
+  Node *newNode = createNewNode(insertName,insertAge);
 
   Node *current = NULL, *prev = NULL;
   current = find(listPointer, findName, findAge, &prev);
@@ -371,6 +367,7 @@ int main() {
       scanf("%s",name);
       printf("Please enter your age\n");
       scanf("%d",&age);
+
       insertAtHead(&employeeList,name,age );
       break;
 
