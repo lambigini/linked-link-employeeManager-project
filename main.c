@@ -151,14 +151,20 @@ void printListDetail(List * listPointer){
   if (isListEmpty(listPointer) == 1){
     printf("LIST IS EMPTY\n");
   } else {
+    printf("*************************************************************\n\n");
+  //  printf("\n");
     printf("HEAD ADDRESS %p\n",listPointer->head);
+    printf("\n");
     while(current != NULL){
-      printf("[%s - %d | %p] ",current->name,current->age, current);
+      printf("[%s - %d | Node address  %p - Node's pointer next address %p ] ",current->name,current->age, current, current->next);
+      printf("\n");
       current = current->next; // move to the next pointer
     }
 
     printf("\nTAIL ADDRESS %p\n",listPointer->tail);
     printf("\n");
+    printf("*************************************************************\n");
+  //  printf("\n");
   }
 }
 
@@ -367,7 +373,6 @@ int main() {
       scanf("%s",name);
       printf("Please enter your age\n");
       scanf("%d",&age);
-
       insertAtHead(&employeeList,name,age );
       break;
 
