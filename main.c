@@ -152,7 +152,7 @@ void printListDetail(List * listPointer){
     printf("LIST IS EMPTY\n");
   } else {
     printf("*************************************************************\n\n");
-  //  printf("\n");
+
     printf("HEAD ADDRESS %p\n",listPointer->head);
     printf("\n");
     while(current != NULL){
@@ -163,8 +163,11 @@ void printListDetail(List * listPointer){
 
     printf("\nTAIL ADDRESS %p\n",listPointer->tail);
     printf("\n");
+
+    printf("Number of Node: %d\n\n",listPointer->numberOfNode);
+
     printf("*************************************************************\n");
-  //  printf("\n");
+
   }
 }
 
@@ -283,6 +286,7 @@ void outputToFile(List *listPointer){
     free(current);
     fclose(ofp);
 }
+
 Node *find(List *listPointer, char findName[], int findAge, Node **previousPtr){
 
 Node *current = listPointer->head;
@@ -308,44 +312,41 @@ void insertTarget(List *listPointer,char findName[], int findAge, char insertNam
   current = find(listPointer, findName, findAge, &prev);
 
   if (current == NULL){
-    printf("list empty\n");
-  }
-
-  if (current == listPointer->head){
-    insertAtHead(listPointer,insertName,insertAge);
-    printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
-  } else if ( current == listPointer->tail){
-    insertAtTail(listPointer,insertName,insertAge);
-    printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+    printf("\nNOT FOUND DATA \n");
   } else {
-    prev->next = newNode;
-    newNode->next = current;
-
-    listPointer->numberOfNode++;
-    printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+    if (current == listPointer->head){
+      insertAtHead(listPointer,insertName,insertAge);
+      printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+    } else if ( current == listPointer->tail){
+      insertAtTail(listPointer,insertName,insertAge);
+      printf("Target node insert: name %s age %d \n", newNode->name, newNode->age);
+    } else {
+      prev->next = newNode;
+      newNode->next = current;
+    }
+      listPointer->numberOfNode++;
+      printf("Target node inserted: name %s age %d \n", newNode->name, newNode->age);
   }
-
 }
-
 
 void deleteTarget(List *listPointer,char findName[], int findAge){
   Node *current = NULL, *prev = NULL;
   current = find(listPointer, findName, findAge, &prev);
 
   if (current == NULL){
-    printf("list empty\n");
-  }
-
-  if (current == listPointer->head){
-    deleteAtHead(listPointer);
-    printf("Target node deleted: name %s age %d \n", current->name, current->age);
-  } else if ( current == listPointer->tail){
-    deleteAtTail(listPointer);
-    printf("Target node deleted: name %s age %d \n", current->name, current->age);
+    printf("\nNOT FOUND DATA \n");
   } else {
-    prev->next = current->next;
-    listPointer->numberOfNode--;
-    printf("Target node deleted: name %s age %d \n", current->name, current->age);
+      if (current == listPointer->head){
+        deleteAtHead(listPointer);
+        printf("Target node deleted: name %s age %d \n", current->name, current->age);
+      } else if ( current == listPointer->tail){
+        deleteAtTail(listPointer);
+        printf("Target node deleted: name %s age %d \n", current->name, current->age);
+      } else {
+        prev->next = current->next;
+      }
+      listPointer->numberOfNode--;
+      printf("Target node deleted: name %s age %d \n", current->name, current->age);
   }
 
 }
@@ -415,7 +416,7 @@ int main() {
       currentNode = find(&employeeList,name,age,&previousNode);
 
       if (currentNode == NULL){
-        printf("Not found those data\n");
+        printf("\nNOT FOUND DATA\n");
       } else {
         printf("Found data, address of the target node %p previous node %p \n", currentNode, previousNode);
       }
